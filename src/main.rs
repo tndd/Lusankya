@@ -1,35 +1,29 @@
-use rand::Rng;
-use std::cmp::Ordering;
 use std::io;
 
 fn main() {
-    println!("Guess the number!");
+    let a = [1, 2, 3, 4, 5];
 
-    let secret_number = rand::thread_rng().gen_range(1..101);
+    println!("Please enter an array index.");
+    // 配列の何番目の要素にアクセスするか指定してください
 
-    loop {
-        println!("Please input your guess.");
+    let mut index = String::new();
 
-        let mut guess = String::new();
+    io::stdin()
+        .read_line(&mut index)
+        .expect("Failed to read line");
+        // 値の読み込みに失敗しました
 
-        io::stdin()
-            .read_line(&mut guess)
-            .expect("Failed to read line");
+    let index: usize = index
+        .trim()
+        .parse()
+        .expect("Index entered was not a number");
+        // 入力された値は数字ではありません
 
-        let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
+    let element = a[index];
 
-        println!("You guessed: {}", guess);
-
-        match guess.cmp(&secret_number) {
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
-            Ordering::Equal => {
-                println!("You win!");
-                break;
-            }
-        }
-    }
+    println!(
+        "The value of the element at index {} is: {}",
+        // {}番目の要素の値は{}です
+        index, element
+    );
 }
