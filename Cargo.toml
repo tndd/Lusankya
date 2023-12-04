@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 apca = "0.28.0"
+tokio = { version = "1", features = ["full"] }
