@@ -1,5 +1,5 @@
-mod infra {
-    mod api {
+pub mod infra {
+    pub mod api {
         pub mod client;
     }
 }

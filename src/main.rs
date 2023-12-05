@@ -1,23 +1,15 @@
-use apca::ApiInfo;
-use apca::Client;
-use apca::api::v2::assets::AssetsReq;
-use apca::api::v2::asset::{Status, Class};
+use stocks_rust::infra::api::client::AlpacaApiClient;
 use dotenv::dotenv;
+use serde_json::to_string;
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
 
-    let api_info = ApiInfo::from_env().unwrap();
-    let client = Client::new(api_info);
+    let client = AlpacaApiClient::new();
+    let assets = client.get_all_assets().await;
 
-    let assets_req = AssetsReq {
-        status: Status::Active,
-        class: Class::UsEquity,
-    };
-    let assets = client.issue::<apca::api::v2::assets::Get>(&assets_req).await.unwrap();
 
-    for asset in assets {
-        println!("{} is tradable: {}", asset.symbol, asset.tradable);
-    }
+    let assets_json = to_string(&assets).unwrap();
+    std::fs::write("assets.json", assets_json).unwrap();
 }

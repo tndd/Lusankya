@@ -1054,6 +1054,7 @@ dependencies = [
  "apca",
  "dotenv",
  "futures",
+ "serde_json",
  "tokio",
 ]
 

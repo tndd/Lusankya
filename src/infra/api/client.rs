@@ -2,7 +2,7 @@ use apca::ApiInfo;
 use apca::Client;
 use apca::api::v2::assets::AssetsReq;
 use apca::api::v2::asset::{Status, Class, Asset};
-use std::sync::Arc;
+use futures::join;
 
 pub struct AlpacaApiClient {
     client: Client
@@ -55,7 +55,11 @@ impl AlpacaApiClient {
         self.get_assets(assets_req).await
     }
 
-    pub async fn get_all_assets(self: Arc<Self>) -> Vec<Asset> {
-
+    pub async fn get_all_assets(&self) -> Vec<Asset> {
+        let f1 = self.get_assets_us_equity_active();
+        let f2 = self.get_assets_crypto_active();
+        let (mut assets1, mut assets2) = join!(f1, f2);
+        assets1.append(&mut assets2);
+        assets1
     }
 }
