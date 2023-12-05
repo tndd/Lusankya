@@ -56,10 +56,42 @@ impl AlpacaApiClient {
     }
 
     pub async fn get_all_assets(&self) -> Vec<Asset> {
-        let f1 = self.get_assets_us_equity_active();
-        let f2 = self.get_assets_crypto_active();
-        let (mut assets1, mut assets2) = join!(f1, f2);
-        assets1.append(&mut assets2);
-        assets1
+        let useq_active_ft = self.get_assets_us_equity_active();
+        let crypto_active_ft = self.get_assets_crypto_active();
+        let useq_inactive_ft = self.get_assets_us_equity_inactive();
+        let crypto_inactive_ft = self.get_assets_crypto_inactive();
+        let (
+            mut us_equity_active_assets,
+            mut crypto_active_assets,
+            mut us_equity_inactive_assets,
+            mut crypto_inactive_assets
+        ) = join!(
+            useq_active_ft,
+            crypto_active_ft,
+            useq_inactive_ft,
+            crypto_inactive_ft
+        );
+        let mut all_assets = Vec::new();
+        all_assets.append(&mut us_equity_active_assets);
+        all_assets.append(&mut crypto_active_assets);
+        all_assets.append(&mut us_equity_inactive_assets);
+        all_assets.append(&mut crypto_inactive_assets);
+        all_assets
+    }
+
+    pub async fn get_active_assets(&self) -> Vec<Asset> {
+        let useq_active_ft = self.get_assets_us_equity_active();
+        let crypto_active_ft = self.get_assets_crypto_active();
+        let (
+            mut us_equity_active_assets,
+            mut crypto_active_assets,
+        ) = join!(
+            useq_active_ft,
+            crypto_active_ft,
+        );
+        let mut all_assets = Vec::new();
+        all_assets.append(&mut us_equity_active_assets);
+        all_assets.append(&mut crypto_active_assets);
+        all_assets
     }
 }
