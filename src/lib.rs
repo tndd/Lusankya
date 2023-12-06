@@ -1,5 +1,5 @@
 pub mod infra {
-    pub mod api {
-        pub mod client;
+    pub mod alpaca {
+        pub mod asset;
     }
 }

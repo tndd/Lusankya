@@ -1,26 +1,26 @@
-use apca::ApiInfo;
 use apca::Client;
 use apca::api::v2::assets::AssetsReq;
 use apca::api::v2::asset::{Status, Class, Asset};
 use std::sync::Arc;
 use futures::future::join_all;
 
-pub struct AlpacaApiClient {
+pub struct AlpacaCliAsset {
     client: Arc<Client>
 }
 
-impl AlpacaApiClient {
-    pub fn new() -> Self {
-        let api_info = ApiInfo::from_env().unwrap();
-        let client = Arc::new(Client::new(api_info));
-        Self { client }
+impl AlpacaCliAsset {
+    pub fn new(client: Arc<Client>) -> Self {
+        Self {
+            client: client,
+        }
     }
 
     pub async fn get_all_assets(&self) -> Vec<Asset> {
         let assets_reqs = vec![
-            self.get_req_us_equity_inactive(),
-            self.get_req_crypto_active(),
-            self.get_req_crypto_inactive(),
+            self.get_request_us_equity_active(),
+            self.get_request_us_equity_inactive(),
+            self.get_request_crypto_active(),
+            self.get_request_crypto_inactive(),
         ];
         self.get_assets(assets_reqs).await
     }
@@ -39,21 +39,28 @@ impl AlpacaApiClient {
             .unwrap()
     }
 
-    fn get_req_us_equity_inactive(&self) -> AssetsReq {
+    fn get_request_us_equity_active(&self) -> AssetsReq {
+        AssetsReq {
+            status: Status::Active,
+            class: Class::UsEquity,
+        }
+    }
+
+    fn get_request_us_equity_inactive(&self) -> AssetsReq {
         AssetsReq {
             status: Status::Inactive,
             class: Class::UsEquity,
         }
     }
 
-    fn get_req_crypto_active(&self) -> AssetsReq {
+    fn get_request_crypto_active(&self) -> AssetsReq {
         AssetsReq {
             status: Status::Active,
             class: Class::Crypto,
         }
     }
 
-    fn get_req_crypto_inactive(&self) -> AssetsReq {
+    fn get_request_crypto_inactive(&self) -> AssetsReq {
         AssetsReq {
             status: Status::Inactive,
             class: Class::Crypto,
