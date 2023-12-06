@@ -1,18 +1,25 @@
-use stocks_rust::infra::alpaca::asset::AlpacaCliAsset;
-use apca::{ApiInfo, Client};
-use dotenv::dotenv;
-use serde_json::to_string;
-use std::sync::Arc;
+use tokio_postgres::{NoTls, Error};
 
 #[tokio::main]
-async fn main() {
-    dotenv().ok();
-    let apca_api_info = ApiInfo::from_env().unwrap();
-    let apca_client = Arc::new(Client::new(apca_api_info));
+async fn main() -> Result<(), Error> {
+    // Connect to the database
+    let (client, connection) = tokio_postgres::connect("host=localhost user=postgres password=secret dbname=test", NoTls).await?;
 
-    let alpaca_cli_asset = AlpacaCliAsset::new(apca_client.clone());
-    let assets = alpaca_cli_asset.get_all_assets().await;
+    // The connection object performs the actual communication with the database,
+    // so spawn it off to run on its own.
+    tokio::spawn(async move {
+        if let Err(e) = connection.await {
+            eprintln!("connection error: {}", e);
+        }
+    });
 
-    let assets_json = to_string(&assets).unwrap();
-    std::fs::write("assets.json", assets_json).unwrap();
+    // Now we can execute a query with the client
+    let rows = client.query("SELECT * FROM my_table", &[]).await?;
+
+    for row in rows {
+        let value: i32 = row.get(0);
+        println!("value: {}", value);
+    }
+
+    Ok(())
 }
