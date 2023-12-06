@@ -4,7 +4,7 @@ use apca::api::v2::assets::AssetsReq;
 use apca::api::v2::asset::{Status, Class, Asset};
 use std::sync::Arc;
 use futures::Future;
-use tokio::try_join
+use tokio::try_join;
 
 pub struct AlpacaApiClient {
     client: Arc<Client>
@@ -41,34 +41,30 @@ impl AlpacaApiClient {
     // }
 
     fn get_req_us_equity_active(&self) -> AssetsReq {
-        let assets_req = AssetsReq {
+        AssetsReq {
             status: Status::Active,
             class: Class::UsEquity,
-        };
-        assets_req
+        }
     }
 
     fn get_req_us_equity_inactive(&self) -> AssetsReq {
-        let assets_req = AssetsReq {
+        AssetsReq {
             status: Status::Inactive,
             class: Class::UsEquity,
-        };
-        assets_req
+        }
     }
 
     fn get_req_crypto_active(&self) -> AssetsReq {
-        let assets_req = AssetsReq {
+        AssetsReq {
             status: Status::Active,
             class: Class::Crypto,
-        };
-        assets_req
+        }
     }
 
     fn get_req_crypto_inactive(&self) -> AssetsReq {
-        let assets_req = AssetsReq {
+        AssetsReq {
             status: Status::Inactive,
             class: Class::Crypto,
-        };
-        assets_req
+        }
     }
 }
