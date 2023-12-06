@@ -16,6 +16,15 @@ impl AlpacaApiClient {
         Self { client }
     }
 
+    pub async fn get_all_assets(&self) -> Vec<Asset> {
+        let assets_reqs = vec![
+            self.get_req_us_equity_inactive(),
+            self.get_req_crypto_active(),
+            self.get_req_crypto_inactive(),
+        ];
+        self.get_assets(assets_reqs).await
+    }
+
     async fn get_assets(&self, assets_reqs: Vec<AssetsReq>) -> Vec<Asset> {
         let futures = assets_reqs.into_iter().map(|assets_req| self.get_asset(assets_req));
         let assets: Vec<Vec<Asset>> = join_all(futures).await;
