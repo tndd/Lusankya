@@ -17,18 +17,17 @@ impl AlpacaApiClient {
     }
 
     async fn get_assets(&self, assets_reqs: Vec<AssetsReq>) -> Vec<Asset> {
-        let client = Arc::clone(&self.client);
-        let futures = assets_reqs.into_iter().map(|assets_req| {
-            let client = Arc::clone(&client);
-            async move {
-                client
-                    .issue::<apca::api::v2::assets::Get>(&assets_req)
-                    .await
-                    .unwrap()
-            }
-        });
+        let futures = assets_reqs.into_iter().map(|assets_req| self.get_asset(assets_req));
         let assets: Vec<Vec<Asset>> = join_all(futures).await;
         assets.concat()
+    }
+
+    async fn get_asset(&self, assets_req: AssetsReq) -> Vec<Asset> {
+        let client = Arc::clone(&self.client);
+        client
+            .issue::<apca::api::v2::assets::Get>(&assets_req)
+            .await
+            .unwrap()
     }
 
     fn get_req_us_equity_inactive(&self) -> AssetsReq {
