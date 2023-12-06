@@ -11,7 +11,7 @@ pub struct AlpacaCliAsset {
 impl AlpacaCliAsset {
     pub fn new(client: Arc<Client>) -> Self {
         Self {
-            client: client,
+            client,
         }
     }
 
