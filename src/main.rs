@@ -6,8 +6,8 @@ use serde_json::to_string;
 async fn main() {
     dotenv().ok();
 
-    let client = AlpacaApiClient::new();
-    let assets = client.get_all_assets().await;
+    let alpaca_cli = AlpacaApiClient::new();
+    let assets = alpaca_cli.get_all_assets().await;
 
 
     let assets_json = to_string(&assets).unwrap();
