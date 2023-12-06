@@ -3,8 +3,7 @@ use apca::Client;
 use apca::api::v2::assets::AssetsReq;
 use apca::api::v2::asset::{Status, Class, Asset};
 use std::sync::Arc;
-use futures::Future;
-use tokio::try_join;
+use futures::future::join_all;
 
 pub struct AlpacaApiClient {
     client: Arc<Client>
@@ -17,34 +16,19 @@ impl AlpacaApiClient {
         Self { client }
     }
 
-    async fn get_assets_part(&self, assets_req: AssetsReq) -> Vec<Asset> {}
-
-    async fn get_assets(&self, assets_reqs: Vec<AssetsReq>) -> Vec<Asset> {}
-
-    // async fn get_assets(&self, assets_req: AssetsReq) -> Vec<Asset> {
-    //     let client = Arc::clone(&self.client);
-    //     let assets = client
-    //         .issue::<apca::api::v2::assets::Get>(&assets_req)
-    //         .await
-    //         .unwrap();
-    //     assets
-    // }
-
-    // fn _get_assets(&self, assets_req: AssetsReq) -> impl Future<Output = Result<Vec<Asset>, ()>> {
-    //     let client = Arc::clone(&self.client);
-    //     async move {
-    //         match client.issue::<apca::api::v2::assets::Get>(&assets_req).await {
-    //             Ok(assets) => Ok(assets),
-    //             Err(_) => Ok(Vec::new()),  // エラーが発生した場合は空のベクタを返す
-    //         }
-    //     }
-    // }
-
-    fn get_req_us_equity_active(&self) -> AssetsReq {
-        AssetsReq {
-            status: Status::Active,
-            class: Class::UsEquity,
-        }
+    async fn get_assets(&self, assets_reqs: Vec<AssetsReq>) -> Vec<Asset> {
+        let client = Arc::clone(&self.client);
+        let futures = assets_reqs.into_iter().map(|assets_req| {
+            let client = Arc::clone(&client);
+            async move {
+                client
+                    .issue::<apca::api::v2::assets::Get>(&assets_req)
+                    .await
+                    .unwrap()
+            }
+        });
+        let assets: Vec<Vec<Asset>> = join_all(futures).await;
+        assets.concat()
     }
 
     fn get_req_us_equity_inactive(&self) -> AssetsReq {
