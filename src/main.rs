@@ -13,7 +13,6 @@ async fn main() {
     let alpaca_cli_asset = AlpacaCliAsset::new(apca_client.clone());
     let assets = alpaca_cli_asset.get_all_assets().await;
 
-
     let assets_json = to_string(&assets).unwrap();
     std::fs::write("assets.json", assets_json).unwrap();
 }
