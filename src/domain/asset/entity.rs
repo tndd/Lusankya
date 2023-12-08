@@ -2,8 +2,9 @@ use diesel::prelude::*;
 use uuid::Uuid;
 use chrono::NaiveDateTime;
 use crate::schema::asset;
+use serde::Deserialize;
 
-#[derive(Insertable, Queryable, Identifiable)]
+#[derive(Deserialize, Insertable, Queryable, Identifiable)]
 #[diesel(table_name = asset)]
 #[diesel(primary_key(id, version))]
 pub struct Asset {
