@@ -3,7 +3,7 @@
 diesel::table! {
     asset (id, version) {
         id -> Uuid,
-        version -> Timestamp,
+        version -> Text,
         class -> Text,
         exchange -> Text,
         symbol -> Text,
