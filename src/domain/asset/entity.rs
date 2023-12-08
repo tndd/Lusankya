@@ -1,6 +1,14 @@
+use diesel::prelude::*;
+use uuid::Uuid;
+use chrono::NaiveDateTime;
+use crate::schema::asset;
+
+#[derive(Insertable, Queryable, Identifiable)]
+#[table_name="asset"]
+#[primary_key(id, version)]
 pub struct Asset {
     id: Uuid,
-    version: Date,
+    version: NaiveDateTime,
     class: String,
     exchange: String,
     symbol: String,
