@@ -1,7 +1,7 @@
 use apca::{ApiInfo, Client};
 use std::sync::{Arc, RwLock};
 
-fn new_apca_client() -> Arc<RwLock<Client>> {
+pub fn new_apca_client() -> Arc<RwLock<Client>> {
     // [Note] Run dotenv first.
     // Fill env variable APCA_API_KEY_ID & APCA_API_SECRET_KEY.
     let apca_api_info = ApiInfo::from_env().unwrap();
