@@ -3,6 +3,7 @@ use apca::api::v2::assets::AssetsReq;
 use apca::api::v2::asset::{Status, Class, Asset};
 use std::sync::{Arc, RwLock};
 use futures::future::join_all;
+use serde_json::to_string;
 
 pub struct AlpacaCliAsset {
     client: Arc<RwLock<Client>>
@@ -15,7 +16,7 @@ impl AlpacaCliAsset {
         }
     }
 
-    pub async fn get_all_assets(&self) -> Vec<Asset> {
+    pub async fn get_all_assets(&self) -> String {
         let assets_reqs = vec![
             self.get_request_us_equity_active(),
             self.get_request_us_equity_inactive(),
@@ -25,14 +26,15 @@ impl AlpacaCliAsset {
         self.get_assets(assets_reqs).await
     }
 
-    async fn get_assets(&self, assets_reqs: Vec<AssetsReq>) -> Vec<Asset> {
+    async fn get_assets(&self, assets_reqs: Vec<AssetsReq>) -> String {
         let futures = assets_reqs.into_iter().map(|assets_req| self.get_asset(assets_req));
         let assets: Vec<Vec<Asset>> = join_all(futures).await;
-        assets.concat()
+        to_string(&assets.concat()).unwrap()
     }
 
     async fn get_asset(&self, assets_req: AssetsReq) -> Vec<Asset> {
-        let client = Arc::clone(&self.client);
+        let client = self.client.clone();
+        let client = client.read().unwrap();
         client
             .issue::<apca::api::v2::assets::Get>(&assets_req)
             .await
