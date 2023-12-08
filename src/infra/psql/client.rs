@@ -1,23 +1,14 @@
-use std::sync::{Arc, Mutex};
-use tokio_postgres::{Client, NoTls, Error};
+use std::sync::{Arc, RwLock};
+use tokio_postgres::{Client, Error, NoTls};
 
 pub struct PsqlClient {
-    client: Arc<Mutex<Client>>,
+    client: Arc<RwLock<Client>>,
 }
 
 impl PsqlClient {
-    pub async fn new_async(host: String, user: String, password: String, db_name: String) -> Result<Self, Error> {
-        let conn_string = format!("host={} user={} password={} dbname={}", host, user, password, db_name);
-        let (client, connection) = tokio_postgres::connect(&conn_string, NoTls).await?;
-
-        tokio::spawn(async move {
-            if let Err(e) = connection.await {
-                eprintln!("connection error: {}", e);
-            }
-        });
-
-        Ok(Self {
-            client: Arc::new(Mutex::new(client)),
-        })
+    pub fn new(client: Client) -> Self {
+        PsqlClient {
+            client: Arc::new(RwLock::new(client)),
+        }
     }
 }
