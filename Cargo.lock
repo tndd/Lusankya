@@ -1197,12 +1197,14 @@ name = "stocks-rust"
 version = "0.1.0"
 dependencies = [
  "apca",
+ "chrono",
  "diesel",
  "dotenv",
  "futures",
  "serde_json",
  "tokio",
  "tokio-postgres",
+ "uuid",
 ]
 
 [[package]]
