@@ -1,5 +1,5 @@
 use std::sync::{Arc, RwLock};
-use tokio_postgres::{Client, Error, NoTls};
+use tokio_postgres::Client;
 
 pub struct PsqlClient {
     client: Arc<RwLock<Client>>,
