@@ -4,8 +4,8 @@ use chrono::NaiveDateTime;
 use crate::schema::asset;
 
 #[derive(Insertable, Queryable, Identifiable)]
-#[table_name="asset"]
-#[primary_key(id, version)]
+#[diesel(table_name = asset)]
+#[diesel(primary_key(id, version))]
 pub struct Asset {
     id: Uuid,
     version: NaiveDateTime,
