@@ -6,6 +6,7 @@ pub mod domain {
 }
 pub mod infra {
     pub mod alpaca {
+        pub mod factory;
         pub mod asset;
     }
     pub mod psql {
