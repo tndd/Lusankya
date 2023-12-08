@@ -1,6 +1,7 @@
 pub mod domain {
     pub mod asset {
         pub mod entity;
+        pub mod repository;
     }
 }
 pub mod infra {
