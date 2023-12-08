@@ -1,15 +1,15 @@
 use apca::Client;
 use apca::api::v2::assets::AssetsReq;
 use apca::api::v2::asset::{Status, Class, Asset};
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 use futures::future::join_all;
 
 pub struct AlpacaCliAsset {
-    client: Arc<Client>
+    client: Arc<RwLock<Client>>
 }
 
 impl AlpacaCliAsset {
-    pub fn new(client: Arc<Client>) -> Self {
+    pub fn new(client: Arc<RwLock<Client>>) -> Self {
         Self {
             client,
         }
