@@ -69,3 +69,49 @@ impl AlpacaCliAsset {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use dotenv::dotenv;
+    use crate::infra::alpaca::factory::new_apca_client;
+
+
+    fn get_asset_cli() -> AlpacaCliAsset {
+        dotenv().ok();
+        let client = new_apca_client();
+        AlpacaCliAsset::new(client)
+    }
+
+    #[test]
+    fn get_request_us_equity_active_test() {
+        let asset_cli = get_asset_cli();
+        let request = asset_cli.get_request_us_equity_active();
+        assert_eq!(request.status, Status::Active);
+        assert_eq!(request.class, Class::UsEquity);
+    }
+
+    #[test]
+    fn get_request_us_equity_inactive_test() {
+        let asset_cli = get_asset_cli();
+        let request = asset_cli.get_request_us_equity_inactive();
+        assert_eq!(request.status, Status::Inactive);
+        assert_eq!(request.class, Class::UsEquity);
+    }
+
+    #[test]
+    fn get_request_crypto_active_test() {
+        let asset_cli = get_asset_cli();
+        let request = asset_cli.get_request_crypto_active();
+        assert_eq!(request.status, Status::Active);
+        assert_eq!(request.class, Class::Crypto);
+    }
+
+    #[test]
+    fn get_request_crypto_inactive_test() {
+        let asset_cli = get_asset_cli();
+        let request = asset_cli.get_request_crypto_inactive();
+        assert_eq!(request.status, Status::Inactive);
+        assert_eq!(request.class, Class::Crypto);
+    }
+}
