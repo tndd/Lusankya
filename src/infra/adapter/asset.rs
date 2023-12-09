@@ -7,6 +7,7 @@ pub fn json_to_assets(json: &str) -> Result<Vec<Asset>, serde_json::Error> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use chrono::{Utc, TimeZone};
 
     #[test]
     fn test_json_to_assets() {
@@ -44,7 +45,7 @@ mod tests {
         assert_eq!(assets.len(), 2);
         let asset = &assets[0];
         assert_eq!(asset.id.to_string(), "5cf4cbe2-95dd-47bb-9126-c96d37b2bf96");
-        assert_eq!(asset.version, "NO_VERSION");
+        assert_eq!(asset.version, Utc.timestamp_opt(0, 0).unwrap());
         assert_eq!(asset.class, "us_equity");
         assert_eq!(asset.exchange, "NASDAQ");
         assert_eq!(asset.symbol, "UBNK");
