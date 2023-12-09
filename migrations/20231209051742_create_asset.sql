@@ -1,5 +1,7 @@
 -- Add migration script here
-CREATE TABLE asset (
+CREATE SCHEMA alpaca;
+
+CREATE TABLE alpaca.asset (
     id UUID NOT NULL,
     version TIMESTAMPTZ NOT NULL,
     class TEXT NOT NULL,
