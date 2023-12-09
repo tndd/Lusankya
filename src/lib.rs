@@ -16,4 +16,3 @@ pub mod infra {
         pub mod client;
     }
 }
-pub mod schema;
