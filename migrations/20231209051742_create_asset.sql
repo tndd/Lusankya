@@ -1,8 +1,7 @@
--- Your SQL goes here
-
+-- Add migration script here
 CREATE TABLE asset (
     id UUID NOT NULL,
-    version TEXT NOT NULL,
+    version TIMESTAMPTZ NOT NULL,
     class TEXT NOT NULL,
     exchange TEXT NOT NULL,
     symbol TEXT NOT NULL,
