@@ -3,6 +3,9 @@ pub mod domain {
         pub mod entity;
         pub mod repository;
     }
+    pub mod entity {
+        pub mod asset;
+    }
 }
 pub mod infra {
     pub mod adapter {
@@ -12,7 +15,8 @@ pub mod infra {
         pub mod factory;
         pub mod asset;
     }
-    pub mod psql {
+    pub mod database {
+        pub mod asset;
         pub mod client;
     }
 }
