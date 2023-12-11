@@ -45,3 +45,37 @@ impl DbClient {
         })
     }
 }
+
+
+    pub async fn execute_queries_in_parallel_another<F, R>(
+        &self,
+        queries: &[String],
+        execute_and_process: F,
+    ) -> Result<Vec<R>, sqlx::Error>
+    where
+        F: Fn(&str) -> R + Send + Sync + 'static,
+        R: Future<Output = Result<(), sqlx::Error>> + Send + 'static,
+    {
+        let tasks: Vec<_> = queries.iter().map(|query| {
+            let pool = self.pool.clone();
+            let query = query.clone();
+            tokio::spawn(async move {
+                let result = execute_and_process(&query).await?;
+                Ok::<_, sqlx::Error>(result)
+            })
+        }).collect();
+
+        let results = futures::future::join_all(tasks).await;
+        // Handle results...
+    }
+
+let queries = vec![
+    "SELECT * FROM table1",
+    "SELECT * FROM table2",
+    // ...
+];
+
+let results = db_client.execute_queries_in_parallel(&queries, |query| async move {
+    let rows = sqlx::query(query).fetch_all(&db_client.pool).await?;
+    Ok(rows)
+}).await?;
